@@ -41,7 +41,8 @@ const getAIClient = async () => {
 export const generateText = async (prompt: string, modelType: 'basic' | 'creative' = 'basic'): Promise<string> => {
   try {
     const ai = await getAIClient();
-    const modelName = modelType === 'creative' ? 'gemini-3-pro-preview' : 'gemini-2.5-flash';
+    // Use gemini-2.5-flash for everything to ensure access and stability
+    const modelName = 'gemini-2.5-flash';
     
     const response = await ai.models.generateContent({
       model: modelName,
@@ -152,26 +153,34 @@ export const transformPerson = async (
 ): Promise<EnhancedPhotoResult> => {
   try {
     const ai = await getAIClient();
+    // Using gemini-2.5-flash-image (Banana) as it is the stable model for image generation
+    // gemini-3-pro-image-preview often returns 403 PERMISSION_DENIED without specific billing setups
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
-          { text: "Here is Person 1:" },
+          { text: "Generate a high-quality, photorealistic image of these two people hugging warmly. \n\nPerson 1 (Reference):" },
           {
             inlineData: {
               mimeType: mimeTypeSource, 
               data: base64Source
             }
           },
-          { text: "\nHere is Person 2:" },
+          { text: "\nPerson 2 (Reference):" },
           {
             inlineData: {
               mimeType: mimeTypeTarget, 
               data: base64Target
             }
           },
-          { text: "\nGenerate a photorealistic, heartwarming image of Person 1 and Person 2 hugging each other warmly. Ensure the facial features and likeness of both individuals are preserved." }
+          { text: "\nInstructions: Create a seamless, photorealistic composition where Person 1 and Person 2 are embracing in a warm hug. Preserve their facial features, expressions, and likenesses as accurately as possible. The style should be realistic photography." }
         ]
+      },
+      config: {
+        imageConfig: {
+            // imageSize is NOT supported in flash-image, only in pro
+            aspectRatio: '1:1'
+        }
       }
     });
 
@@ -188,9 +197,11 @@ export const transformPerson = async (
     }
     
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Person Transformation Error:", error);
-    return { text: "Failed to generate image. Safety policies or API limit reached." };
+    // Return the specific error message to help debug if it persists
+    const msg = error.message || "Failed to generate image.";
+    return { text: `Error: ${msg}` };
   }
 };
 

@@ -59,6 +59,45 @@ export const AdContainer: React.FC<{ code: string }> = ({ code }) => {
   return <div ref={containerRef} className="w-full h-full flex justify-center items-center overflow-hidden" />;
 };
 
+// Utility to optimize images for faster AI processing
+const resizeImageForAI = (base64Str: string): Promise<string> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      
+      // Resize to max 1024px for faster processing (standard for flash models)
+      // This drastically reduces payload size and latency
+      const MAX_SIZE = 1024;
+      if (width > height) {
+        if (width > MAX_SIZE) {
+          height *= MAX_SIZE / width;
+          width = MAX_SIZE;
+        }
+      } else {
+        if (height > MAX_SIZE) {
+          width *= MAX_SIZE / height;
+          height = MAX_SIZE;
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+      } else {
+          resolve(base64Str);
+      }
+    };
+    img.onerror = () => resolve(base64Str);
+  });
+};
+
 export interface ToolWrapperProps {
   title: string;
   description: string;
@@ -182,10 +221,11 @@ export const PhotoEnhancer = () => {
     setResultImage(null);
     setResultText('');
     
-    // Extract base64
-    const base64 = selectedImage.split(',')[1];
+    // Optimize image size before sending to API for speed
+    const optimizedImage = await resizeImageForAI(selectedImage);
+    const base64 = optimizedImage.split(',')[1];
     
-    const result = await enhancePhoto(base64, mimeType, instructions);
+    const result = await enhancePhoto(base64, "image/jpeg", instructions);
     
     if (result.image) {
       setResultImage(`data:image/png;base64,${result.image}`);
@@ -537,10 +577,15 @@ export const PersonTransformer = () => {
     setResultText('');
     setError('');
     
-    const base64Source = sourceImage.split(',')[1];
-    const base64Target = targetImage.split(',')[1];
+    // Resize inputs to optimize speed
+    const optimizedSource = await resizeImageForAI(sourceImage);
+    const optimizedTarget = await resizeImageForAI(targetImage);
+
+    const base64Source = optimizedSource.split(',')[1];
+    const base64Target = optimizedTarget.split(',')[1];
     
-    const result = await transformPerson(base64Source, sourceMime, base64Target, targetMime);
+    // Always use image/jpeg for optimized/resized images
+    const result = await transformPerson(base64Source, "image/jpeg", base64Target, "image/jpeg");
     
     if (result.image) {
       setResultImage(`data:image/png;base64,${result.image}`);

@@ -164,7 +164,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onNavigate }) => {
 
   const insertToolLink = (tool: {name: string, view: ViewState}) => {
     // Inserts a link formatted as [Tool Name](#VIEW_STATE)
-    const linkText = `\n\n[🚀 Launch ${tool.name}](#${tool.view})\n`;
+    // Removed rocket emoji as per user request
+    const linkText = `\n\n[Launch ${tool.name}](#${tool.view})\n`;
     setCurrentPost(prev => ({ ...prev, content: (prev.content || '') + linkText }));
   };
 

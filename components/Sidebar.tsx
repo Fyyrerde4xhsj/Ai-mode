@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Home, Clapperboard, Captions, Image as ImageIcon, FileText, 
-  Lightbulb, NotebookPen, Calendar, Bell, ShieldCheck, HeartHandshake, Minimize2, BookOpen
+  Lightbulb, NotebookPen, Calendar, Bell, ShieldCheck, HeartHandshake, Minimize2, BookOpen,
+  Files, Code, Wrench
 } from 'lucide-react';
 import { ViewState, AdConfig } from '../types';
 import { rtdb } from '../firebaseConfig';
@@ -83,6 +84,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, to
             {navItem(ViewState.IMAGE_COMPRESSOR, "Image Compressor", Minimize2)}
             {navItem(ViewState.SCRIPT_WRITER, "Script Writer", FileText)}
             {navItem(ViewState.IDEA_GENERATOR, "Idea Generator", Lightbulb)}
+
+            <div className="mt-6 mb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tools</div>
+            {navItem(ViewState.FILE_TOOLS, "File Tools", Files)}
+            {navItem(ViewState.CODE_GENERATORS, "Code Generators", Code)}
+            {navItem(ViewState.UTILITY_TOOLS, "Utility Tools", Wrench)}
 
             <div className="mt-6 mb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Productivity</div>
             {navItem(ViewState.NOTES, "Notes", NotebookPen)}

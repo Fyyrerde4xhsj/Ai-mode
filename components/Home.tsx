@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SLIDES } from '../constants';
 import { ViewState } from '../types';
-import { ChevronRight, ArrowRight, Rocket } from 'lucide-react';
+import { ChevronRight, ArrowRight } from 'lucide-react';
 
 interface HomeProps {
   onNavigate: (view: ViewState) => void;
@@ -84,12 +84,6 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             <div className="flex justify-between items-start mb-4">
                 <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                   <ArrowRight size={20} />
-                </div>
-                
-                {/* Visual Launch Badge */}
-                <div className="bg-gray-50 border border-gray-100 text-gray-500 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1 group-hover:bg-primary group-hover:text-white group-hover:border-primary/20 transition-all shadow-sm">
-                   <Rocket size={10} />
-                   <span>Launch!</span>
                 </div>
             </div>
             

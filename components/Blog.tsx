@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BlogPost, ViewState } from '../types';
 import { rtdb } from '../firebaseConfig';
 import { ref, onValue } from 'firebase/database';
-import { Calendar, ChevronRight, ArrowLeft, BookOpen, ExternalLink, Rocket } from 'lucide-react';
+import { Calendar, ChevronRight, ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
 
 interface BlogProps {
   onNavigate: (view: ViewState) => void;
@@ -76,7 +76,6 @@ export const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
                         : 'text-primary hover:underline'
                     }`}
                 >
-                    {isLaunchLink && <Rocket size={14} />}
                     {linkText} 
                     {!isLaunchLink && <ExternalLink size={12} />}
                 </a>

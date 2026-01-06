@@ -6,13 +6,16 @@ import { ViewState, AdConfig } from './types';
 import Sidebar from './components/Sidebar';
 import Home from './components/Home';
 import { GenericGenerator, PhotoEnhancer, ToolWrapper, VideoAnalyst, AdContainer, PersonTransformer, ImageCompressor } from './components/Tools';
+import { FileTools } from './components/FileTools';
+import { CodeGenerators } from './components/CodeGenerators';
+import { UtilityTools } from './components/UtilityTools';
 import { NotesApp, PlannerApp, RemindersApp } from './components/Productivity';
 import AdminPanel from './components/AdminPanel';
 import { AuthPage } from './components/Auth';
 import { Blog } from './components/Blog';
 
 // Icons for dynamic wrappers
-import { Clapperboard, Captions, FileText, Lightbulb, Bell, HeartHandshake, Minimize2 } from 'lucide-react';
+import { Clapperboard, Captions, FileText, Lightbulb, Bell, HeartHandshake, Minimize2, Files, Code, Wrench } from 'lucide-react';
 
 const App = () => {
   const [activeView, setActiveView] = useState<ViewState>(ViewState.HOME);
@@ -169,6 +172,39 @@ const App = () => {
             icon={Minimize2}
           >
             <ImageCompressor />
+          </ToolWrapper>
+        );
+
+      case ViewState.FILE_TOOLS:
+        return (
+          <ToolWrapper 
+            title="File Tools" 
+            description="A suite of utilities to manage your documents. Merge, split, and convert PDFs and images instantly in your browser." 
+            icon={Files}
+          >
+            <FileTools />
+          </ToolWrapper>
+        );
+
+      case ViewState.CODE_GENERATORS:
+        return (
+          <ToolWrapper 
+            title="Code Generators" 
+            description="Instantly generate boilerplate code for your web projects. Get started faster with production-ready HTML, CSS, and JS templates." 
+            icon={Code}
+          >
+            <CodeGenerators />
+          </ToolWrapper>
+        );
+
+      case ViewState.UTILITY_TOOLS:
+        return (
+          <ToolWrapper 
+            title="Utility & Generators" 
+            description="A collection of essential tools for developers and creators. Generate passwords, QR codes, hashes, colors, and more instantly." 
+            icon={Wrench}
+          >
+            <UtilityTools />
           </ToolWrapper>
         );
 
